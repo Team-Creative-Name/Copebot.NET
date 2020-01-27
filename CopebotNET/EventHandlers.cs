@@ -1,10 +1,16 @@
 ﻿using System.Threading.Tasks;
+using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 
 namespace CopebotNET {
-	public static class EventHandlers {
+	public class EventHandlers
+	{
+		private readonly ulong _typingChannelId;
+		public EventHandlers(ulong typingChannelId) {
+			_typingChannelId = typingChannelId;
+		}
 
-		public static async Task Bot_PinsUpdated(ChannelPinsUpdateEventArgs e) {
+		public async Task Bot_PinsUpdated(ChannelPinsUpdateEventArgs e) {
 			var test = e.Channel.GetPinnedMessagesAsync().Result.Count;
 
 			await e.Channel.SendMessageAsync(test.ToString());
@@ -16,9 +22,28 @@ namespace CopebotNET {
 				await e.Channel.SendMessageAsync("Channel out of pins!");
 		}
 
-		public static async Task Bot_MessageCreated(MessageCreateEventArgs e) {
+		public async Task Bot_MessageCreated(MessageCreateEventArgs e) {
 			if (e.Message.Content.ToLower().Equals("test") && !e.Message.Author.IsBot)
 				await e.Message.RespondAsync("test!!");
+		}
+
+		public async Task Bot_TypingStarted(TypingStartEventArgs eventArgs) {
+			var builder = new DiscordEmbedBuilder()
+				.WithTitle("Typing was started!")
+				.WithAuthor(eventArgs.User.Username,
+					eventArgs.User.AvatarUrl,
+					eventArgs.User.AvatarUrl)
+				.WithTimestamp(eventArgs.StartedAt)
+				.WithDescription("In server \"" +
+				                 eventArgs.Guild.Name +
+				                 "\",\nin channel #" +
+				                 eventArgs.Channel.Name +
+				                 " (<#" +
+				                 eventArgs.Channel.Id +
+				                 ">)");
+			
+			await eventArgs.Client.GetChannelAsync(_typingChannelId).Result
+				.SendMessageAsync(embed: builder.Build());
 		}
 	}
 }

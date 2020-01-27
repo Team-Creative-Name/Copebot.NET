@@ -1,4 +1,5 @@
-﻿﻿using System.Threading.Tasks;
+﻿﻿using System;
+ using System.Threading.Tasks;
 using CopebotNET.Utilities;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
@@ -205,6 +206,34 @@ namespace CopebotNET {
 
 			
 			await context.Client.UpdateStatusAsync(userStatus: UserStatus.Idle);
+		}
+
+		[Command("shutdown")]
+		[Description("Shuts down the bot")]
+		public async Task Shutdown(CommandContext context) {
+			var interactivity = context.Client.GetInteractivity();
+
+			await context.RespondAsync("Are you sure you want to shut down the bot?");
+			
+			var wait = interactivity.WaitForMessageAsync(waitContext =>
+				waitContext.Author.Id == context.User.Id &&
+				(waitContext.Content.Equals("yes", StringComparison.OrdinalIgnoreCase) ||
+				 waitContext.Content.Equals("no", StringComparison.OrdinalIgnoreCase)));
+
+			if (wait != null) {
+				if (wait.Result.Result.Content.Equals("yes", StringComparison.OrdinalIgnoreCase)) {
+					await context.RespondAsync("Goodbye!");
+			
+					context.Client.Dispose();
+			
+					Environment.Exit(0);
+				}
+				else if (wait.Result.Result.Content.Equals("no", StringComparison.OrdinalIgnoreCase))
+					await context.RespondAsync("Shutdown cancelled");
+			}
+			else
+				await context.RespondAsync("Timed out! Shutdown cancelled");
+
 		}
 	}
 }

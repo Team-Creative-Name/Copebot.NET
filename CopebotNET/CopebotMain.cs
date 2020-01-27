@@ -16,7 +16,7 @@ namespace CopebotNET
 	internal class Bot
 	{
 		private static readonly HttpClient HttpClient = new HttpClient();
-		public DiscordClient Client { get; set; }
+		private DiscordClient Client { get; set; }
 		private CommandsNextExtension Commands { get; set; }
 
 		public static void Main() {
@@ -24,8 +24,8 @@ namespace CopebotNET
 			
 			bot.RunCopebot().GetAwaiter().GetResult();
 		}
-		
-		public async Task RunCopebot() {
+
+		private async Task RunCopebot() {
             string json;
             using (var stream = File.OpenRead(Path.Combine(Environment.CurrentDirectory, "config.json")))
             using (var reader = new StreamReader(stream, new UTF8Encoding(false)))
@@ -43,10 +43,12 @@ namespace CopebotNET
                 UseInternalLogHandler = true
             };
             
+            var eventHandlers = new EventHandlers(configJson.TypingChannelId);
             Client = new DiscordClient(config);
 
-            Client.MessageCreated += EventHandlers.Bot_MessageCreated;
-            Client.ChannelPinsUpdated += EventHandlers.Bot_PinsUpdated;
+            Client.MessageCreated += eventHandlers.Bot_MessageCreated;
+            Client.ChannelPinsUpdated += eventHandlers.Bot_PinsUpdated;
+            Client.TypingStarted += eventHandlers.Bot_TypingStarted;
 
             var interactivityConfig = new InteractivityConfiguration {
                 Timeout = TimeSpan.FromMinutes(1.0)
@@ -87,5 +89,8 @@ namespace CopebotNET
         
 		[JsonProperty("imgbb_api_key")]
 		public string ImgbbApiKey { get; private set; }
+		
+		[JsonProperty("typing_channel_id")]
+		public ulong TypingChannelId { get; private set; }
 	}
 }
