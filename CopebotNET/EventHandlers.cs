@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
+// ReSharper disable MemberCanBeMadeStatic.Global
 
 namespace CopebotNET {
 	public class EventHandlers

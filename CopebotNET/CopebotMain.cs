@@ -8,6 +8,7 @@ using CopebotNET.Utilities;
 using DSharpPlus;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.Interactivity;
+using DSharpPlus.VoiceNext;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 
@@ -17,6 +18,7 @@ namespace CopebotNET
 	{
 		private static readonly HttpClient HttpClient = new HttpClient();
 		private DiscordClient Client { get; set; }
+		private static VoiceNextExtension _voice;
 		private CommandsNextExtension Commands { get; set; }
 
 		public static void Main() {
@@ -35,7 +37,7 @@ namespace CopebotNET
             
             var config = new DiscordConfiguration
             {
-                Token = configJson.Token,
+                Token = configJson.MainToken,
                 TokenType = TokenType.Bot,
 
                 AutoReconnect = true,
@@ -49,6 +51,8 @@ namespace CopebotNET
             Client.MessageCreated += eventHandlers.Bot_MessageCreated;
             Client.ChannelPinsUpdated += eventHandlers.Bot_PinsUpdated;
             Client.TypingStarted += eventHandlers.Bot_TypingStarted;
+            
+            
 
             var interactivityConfig = new InteractivityConfiguration {
                 Timeout = TimeSpan.FromMinutes(1.0)
@@ -81,8 +85,11 @@ namespace CopebotNET
 	}
 	
 	internal class ConfigJson {
-		[JsonProperty("token")]
-		public string Token { get; private set; }
+		[JsonProperty("main_token")]
+		public string MainToken { get; private set; }
+		
+		[JsonProperty("helper_token")]
+		public string HelperToken { get; private set; }
 
 		[JsonProperty("prefix")]
 		public string CommandPrefix { get; private set; }

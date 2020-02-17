@@ -6,11 +6,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="DSharpPlus" Version="4.0.0-nightly-00649" />
-      <PackageReference Include="DSharpPlus.CommandsNext" Version="4.0.0-nightly-00649" />
-      <PackageReference Include="DSharpPlus.Interactivity" Version="4.0.0-nightly-00649" />
-      <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.0" />
-      <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="3.1.0" />
+      <PackageReference Include="DSharpPlus" Version="4.0.0-nightly-00657" />
+      <PackageReference Include="DSharpPlus.CommandsNext" Version="4.0.0-nightly-00657" />
+      <PackageReference Include="DSharpPlus.Interactivity" Version="4.0.0-nightly-00657" />
+      <PackageReference Include="DSharpPlus.VoiceNext" Version="4.0.0-nightly-00657" />
+      <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.1" />
+      <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="3.1.1" />
       <PackageReference Include="NETStandard.Library" Version="2.0.3" />
       <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
       <PackageReference Include="System.Memory" Version="4.5.3" />
@@ -22,6 +23,12 @@
 
     <ItemGroup>
       <None Update="config.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="libopus.dll">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="libsodium.dll">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
     </ItemGroup>
